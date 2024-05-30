@@ -1,0 +1,154 @@
+/* Estilos gerais */
+body {
+    background-color: #0070BB;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-family: "Montserrat", sans-serif;
+    /* Impede a rolagem horizontal */
+}
+
+/* Barra de navegação */
+.barra {
+    background-color: #0070BB;
+    color: #FEFEFA;
+    display: flex;
+    justify-content: space-between;
+    /* Adiciona espaçamento entre os itens */
+    align-items: center;
+    padding: 10px 20px;
+    width: 100%;
+    position: relative;
+    /* Remover 'fixed' para tornar o menu não fixo */
+    z-index: 1;
+    /* Adicionar um z-index para garantir que o menu fique sobreposto a outros elementos */
+}
+
+/* Manter o h1 à esquerda do menu */
+.barra h1 {
+    margin: 0;
+    font-family: "Montserrat", sans-serif;
+    display: flex;
+    align-items: center; /* Alinha o texto verticalmente com a imagem */
+}
+
+/* Tamanho da imagem do gatinho igual ao texto */
+.barra h1 img {
+    height: 1em; /* Define a altura da imagem igual ao tamanho do texto */
+    margin-left: 5px; /* Adiciona um pequeno espaçamento entre o texto e a imagem */
+}
+
+/* Centralizar apenas as opções do menu */
+.barra nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    /* Centralizar as opções de menu */
+}
+
+.barra nav ul li {
+    margin-right: 30px;
+}
+
+.barra nav ul li:first-child {
+    margin-right: 30px;
+    /* Distância menor entre as opções */
+}
+
+.barra nav ul li a {
+    text-decoration: none;
+    color: #FEFEFA;
+    font-family: "Montserrat", sans-serif;
+}
+
+@media screen and (max-width: 700px) {
+
+    /* Barra de navegação responsiva */
+    .barra {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .barra nav {
+        margin-top: 10px;
+    }
+
+    .barra nav ul {
+        margin-top: 10px;
+    }
+
+    .barra nav ul li {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .content {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    /* Barra de navegação responsiva */
+    .barra {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .barra nav {
+        margin-top: 10px;
+    }
+
+    .barra nav ul {
+        margin-top: 10px;
+    }
+
+    .barra nav ul li {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .corpo-index,
+    .img-index {
+        width: 100%;
+        text-align: center;
+    }
+
+    .corpo-index {
+        padding: 20px;
+    }
+}
+
+.h1-index {
+    color: #FEFEFA;
+    font-family: "Montserrat", sans-serif;
+}
+
+/* Adiciona flexbox para posicionar os elementos na página */
+
+
+.img-index img {
+    max-width: 100%;
+    height: auto;
+}
+
+@media screen and (min-width: 700px) {
+    .h1-index {
+        font-size: 60px;
+    }
+
+    .content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+    }
+}
+

@@ -1,0 +1,252 @@
+/* Estilos gerais */
+body {
+    background-color: #0070BB;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    /* Impede a rolagem horizontal */
+}
+
+/* Barra de navegação */
+.barra {
+    background-color: #FEFEFA;
+    color: rgb(48, 43, 43);
+    display: flex;
+    justify-content: space-between;
+    /* Adiciona espaçamento entre os itens */
+    align-items: center;
+    padding: 10px 20px;
+    width: 100%;
+    position: relative;
+    /* Remover 'fixed' para tornar o menu não fixo */
+    z-index: 1;
+    /* Adicionar um z-index para garantir que o menu fique sobreposto a outros elementos */
+}
+
+/* Manter o h1 à esquerda do menu */
+.barra h1 {
+    margin: 0;
+    font-family: "Montserrat", sans-serif;
+    display: flex;
+    align-items: center;
+    /* Alinha o texto verticalmente com a imagem */
+}
+
+/* Tamanho da imagem do gatinho igual ao texto */
+.barra h1 img {
+    height: 1em;
+    /* Define a altura da imagem igual ao tamanho do texto */
+    margin-left: 5px;
+    /* Adiciona um pequeno espaçamento entre o texto e a imagem */
+}
+
+/* Centralizar apenas as opções do menu */
+.barra nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    /* Centralizar as opções de menu */
+}
+
+.barra nav ul li {
+    margin-right: 40px;
+}
+
+.barra nav ul li:first-child {
+    margin-right: 30px;
+    /* Distância menor entre as opções */
+}
+
+.barra nav ul li a {
+    text-decoration: none;
+    color: rgb(48, 43, 43);
+    font-family: "Montserrat", sans-serif;
+}
+
+@media screen and (max-width: 700px) {
+
+    /* Barra de navegação responsiva */
+    .barra {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .barra nav {
+        margin-top: 10px;
+    }
+
+    .barra nav ul {
+        margin-top: 10px;
+    }
+
+    .barra nav ul li {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .content {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+/* Conteúdo */
+.conteudo {
+    display: flex;
+    flex-wrap: wrap;
+    /* Permitir que os elementos quebrem para a próxima linha */
+    justify-content: center;
+    /* Centralizar os elementos horizontalmente */
+    margin-top: 80px;
+    /* Espaço para a barra de navegação */
+}
+
+.form {
+    background-color: #FEFEFA;
+    border-radius: 20px;
+    box-sizing: border-box;
+    padding: 20px;
+    width: 320px;
+    margin: 20px;
+    /* Aumentar o espaço entre os formulários */
+}
+
+.title {
+    color: #0070BB;
+    font-family: sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.input-container {
+    height: 50px;
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.input {
+    background-color: #FEFEFA;
+    border-radius: 12px;
+    border: 1px solid #0070BB;
+    box-sizing: border-box;
+    color: #333;
+    font-size: 18px;
+    height: 100%;
+    outline: 0;
+    padding: 4px 20px 0;
+    width: 100%;
+}
+
+.cut {
+    background-color: #FEFEFA;
+    border-radius: 10px;
+    height: 20px;
+    left: 20px;
+    position: absolute;
+    top: -20px;
+    transform: translateY(0);
+    transition: transform 200ms;
+    width: 76px;
+}
+
+.cut-short {
+    width: 50px;
+}
+
+.input:focus~.cut,
+.input:not(:placeholder-shown)~.cut {
+    transform: translateY(8px);
+    background-color: #0070BB;
+}
+
+.placeholder {
+    color: #0070BB;
+    font-family: sans-serif;
+    left: 20px;
+    line-height: 14px;
+    pointer-events: none;
+    position: absolute;
+    transform-origin: 0 50%;
+    transition: transform 200ms, color 200ms;
+    top: 20px;
+}
+
+.input:focus~.placeholder,
+.input:not(:placeholder-shown)~.placeholder {
+    transform: translateY(-30px) translateX(10px) scale(0.75);
+}
+
+.input:not(:placeholder-shown)~.placeholder {
+    color: #0070BB;
+}
+
+.input:focus~.placeholder {
+    color: #FEFEFA;
+}
+
+.submit {
+    background-color: #0070BB;
+    border-radius: 12px;
+    border: 0;
+    box-sizing: border-box;
+    color: #eee;
+    cursor: pointer;
+    font-size: 18px;
+    height: 50px;
+    outline: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.submit:active {
+    background-color: green;
+}
+
+/* Ajustes para telas menores */
+@media screen and (max-width: 768px) {
+    .conteudo {
+        flex-direction: column;
+        /* Empilhar os formulários verticalmente */
+        align-items: center;
+        /* Centralizar os formulários na horizontal */
+    }
+
+    .form {
+        width: 80%;
+        /* Ajustar a largura dos formulários */
+    }
+}
+
+
+
+.border-width-4 {
+    border-width: 4px !important;
+}
+
+.overflow-x-hidden {
+    overflow-x: hidden;
+}
+
+.h-100vh {
+    height: 100vh;
+}
+
+.z-index-1 {
+    z-index: 1;
+}
+
+.z-index-2 {
+    z-index: 2;
+}
+
+.opacity-05 {
+    opacity: 0.5;
+}
+
+.delay-01s {
+    animation-delay: 0.2s;
+}
