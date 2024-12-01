@@ -1,7 +1,3 @@
-<?php
-// Iniciar a sessão no início do arquivo
-session_start();
-?>
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -20,7 +16,58 @@ session_start();
 
 <body>
     <div class="barra">
-        <h1>Neneko <img src="img/gatinho.png" alt="logo"></h1>
+        <h2>Bem vindo(a),
+            <?php
+            require_once 'conexao.php';
+            if (isset($_SESSION['usuario_id'])) {
+                $usuario_id = $_SESSION['usuario_id'];
+
+                // SQL para buscar o nome do usuário
+                $sql = "SELECT nome FROM usuarios WHERE id_usuario = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("i", $usuario_id);
+                $stmt->execute();
+                $result = $stmt->get_result();
+
+                if ($result->num_rows > 0) {
+                    $row = $result->fetch_assoc();
+                    echo htmlspecialchars($row['nome'], ENT_QUOTES, 'UTF-8'); // Exibe o nome do usuário de forma segura
+                } else {
+                    echo "Usuário não encontrado"; // Caso o usuário não seja encontrado
+                }
+                $stmt->close();
+            } else {
+                echo "Visitante"; // Caso não haja um usuário logado
+            }
+            ?>
+            ! Seu saldo total é de R$
+            <?php
+            require_once 'conexao.php';
+            if (isset($_SESSION['usuario_id'])) {
+                $usuario_id = $_SESSION['usuario_id'];
+
+                // SQL para somar os saldos das contas bancárias
+                $sql = "SELECT SUM(saldo) as total_saldo FROM contas_bancarias WHERE usuario_id = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("i", $usuario_id);
+                $stmt->execute();
+                $result = $stmt->get_result();
+
+                if ($result->num_rows > 0) {
+                    $row = $result->fetch_assoc();
+                    // Exibe o total do saldo, com formatação monetária
+                    echo number_format($row['total_saldo'], 2, ',', '.');
+                } else {
+                    echo "0,00";  // Caso não haja saldo ou contas
+                }
+                $stmt->close();
+            } else {
+                echo "0,00";  // Caso não haja um usuário logado
+            }
+            ?>
+        </h2>
+
+
         <nav>
             <ul>
                 <li><a href="logout.php">Logout</a></li>
@@ -34,15 +81,31 @@ session_start();
         <button type="button" id="addDespesaBtn" class="btn btn-outline-primary">Adicionar Nova Despesa</button>
     </div>
 
-
     <!-- Modal para adicionar conta bancária -->
-    <div id="addContaModal" class="modal">
+    <div id="addContaModal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close" id="closeContaModal">&times;</span>
             <h2>Adicionar Nova Conta Bancária</h2>
             <form action="adicionar_conta.php" method="post">
-                <label for="nome">Nome:</label>
-                <input type="text" id="nome" name="nome" required><br><br>
+                <label for="nome">Banco:</label>
+                <select class="form-select" id="nome" name="nome" required>
+                    <option value="" selected disabled>Selecione um banco</option>
+                    <option value="Itaú">Itaú</option>
+                    <option value="Bradesco">Bradesco</option>
+                    <option value="Banco do Brasil">Banco do Brasil</option>
+                    <option value="Santander">Santander</option>
+                    <option value="BTG Pactual">BTG Pactual</option>
+                    <option value="Nubank">Nubank</option>
+                    <option value="Inter">Inter</option>
+                    <option value="Banco PAN">Banco PAN</option>
+                    <option value="Sofisa">Sofisa</option>
+                    <option value="Banco de Brasília">Banco de Brasília</option>
+                    <option value="Iti">Iti</option>
+                    <option value="Picpay">Picpay</option>
+                    <option value="BMG">BMG</option>
+                    <option value="C6">C6</option>
+                    <option value="Banrisul">Banrisul</option>
+                </select><br><br>
 
                 <label for="tipo_conta">Tipo de Conta:</label>
                 <input type="text" id="tipo_conta" name="tipo_conta" required><br><br>
