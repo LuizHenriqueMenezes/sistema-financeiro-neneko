@@ -12,6 +12,65 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="css/home.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        // Carregando os pacotes necessários do Google Charts
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawSaldoChart);
+
+        function drawSaldoChart() {
+            // Dados obtidos do backend PHP
+            <?php
+            require_once 'conexao.php';
+            if (isset($_SESSION['usuario_id'])) {
+                $usuario_id = $_SESSION['usuario_id'];
+
+                $sql_saldo = "
+                SELECT nome, SUM(saldo) AS total
+                FROM contas_bancarias
+                WHERE usuario_id = ? 
+                GROUP BY nome
+                ";
+                $stmt_saldo = $conn->prepare($sql_saldo);
+                $stmt_saldo->bind_param("i", $usuario_id);
+                $stmt_saldo->execute();
+                $result_saldo = $stmt_saldo->get_result();
+
+                $dados = [];
+                while ($row = $result_saldo->fetch_assoc()) {
+                    $dados[] = [$row['nome'], (float) $row['total']];
+                }
+                $stmt_saldo->close();
+            } else {
+                $dados = [];
+            }
+            ?>
+
+            // Construa os dados para o gráfico
+            var data = google.visualization.arrayToDataTable([
+                ['Conta', 'Saldo'],
+                <?php
+                foreach ($dados as $dado) {
+                    echo "['" . $dado[0] . "', " . $dado[1] . "],";
+                }
+                ?>
+            ]);
+
+            // Opções do gráfico
+            var options = {
+                title: 'Divisão de Saldo',
+                pieHole: 0.4, // Torna o gráfico um gráfico de rosca
+                backgroundColor: '#f9f9f9',
+                chartArea: { width: '90%', height: '80%' },
+                legend: { position: 'bottom' }
+            };
+
+            // Renderizando o gráfico
+            var chart = new google.visualization.PieChart(document.getElementById('saldoChart'));
+            chart.draw(data, options);
+        }
+    </script>
 </head>
 
 <body>
@@ -39,8 +98,7 @@
             } else {
                 echo "Visitante"; // Caso não haja um usuário logado
             }
-            ?>
-            ! Seu saldo total é de R$
+            ?>! Seu saldo total é de R$
             <?php
             require_once 'conexao.php';
             if (isset($_SESSION['usuario_id'])) {
@@ -197,32 +255,100 @@
         </div>
     </div>
 
-    <div class="list-group">
-        <?php
-        require_once 'conexao.php';
-        //echo "<li class='list-group-item active' aria-current='true'>Contas Bancárias</li>";
-        if (isset($_SESSION['usuario_id'])) {
-            $usuario_id = $_SESSION['usuario_id'];
-            $sql = "SELECT nome, saldo FROM contas_bancarias WHERE usuario_id = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("i", $usuario_id);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    echo "<a class='list-group-item list-group-item-action'>";
-                    echo "<h5 class='mb-1'>{$row['nome']}</h5>";
-                    echo "<p class='mb-1'>Saldo: R$ {$row['saldo']}</p>";
-                    echo "</a>";
+    <div id="contasCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <?php
+            require_once 'conexao.php';
+            if (isset($_SESSION['usuario_id'])) {
+                $usuario_id = $_SESSION['usuario_id'];
+                $sql = "SELECT nome, saldo FROM contas_bancarias WHERE usuario_id = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("i", $usuario_id);
+                $stmt->execute();
+                $result = $stmt->get_result();
+
+                // Array associando os bancos às imagens correspondentes
+                $bancosLogos = [
+                    'ITAú' => 'logo-itau.png',
+                    'BRADESCO' => 'logo-bradesco.png',
+                    'BANCO DO BRASIL' => 'logo-bb.png',
+                    'SANTANDER' => 'logo-santander.png',
+                    'BTG PACTUAL' => 'logo-btg.png',
+                    'NUBANK' => 'logo-nubank.png',
+                    'INTER' => 'logo-inter.png',
+                    'BANCO PAN' => 'logo-pan.png',
+                    'SOFISA' => 'logo-sofisa.png',
+                    'BANCO DE BRASíLIA' => 'logo-brasilia.png',
+                    'ITI' => 'logo-iti.png',
+                    'PICPAY' => 'logo-picpay.png',
+                    'BMG' => 'logo-bmg.png',
+                    'C6' => 'logo-c6.png',
+                    'BANRISUL' => 'logo-banrisul.png'
+                ];
+
+                if ($result->num_rows > 0) {
+                    $cardsPorSlide = 3; // Número de cards por slide
+                    $cardCount = 0;
+                    $isActive = true; // Define o primeiro slide como ativo
+
+                    echo '<div class="carousel-item ' . ($isActive ? 'active' : '') . '"><div class="row">';
+                    while ($row = $result->fetch_assoc()) {
+                        // Converte o nome do banco para maiúsculas
+                        $bancoNome = strtoupper(trim($row['nome'])); // Converte para uppercase e remove espaços extras
+
+                        // Verifica se a chave existe no array de logos e pega a logo correspondente
+                        $logo = isset($bancosLogos[$bancoNome]) ? $bancosLogos[$bancoNome] : 'iconExemplo.png'; // Usa logo padrão se não encontrar
+
+                        // Formatação do saldo
+                        $saldo = number_format($row['saldo'], 2, ',', '.');
+
+                        // Renderiza o card
+                        echo "<div class='col-md-4'>";
+                        echo "<div class='card'>";
+                        echo "<img src='img/$logo' class='card-img-top' alt='$bancoNome' style='height: 150px; object-fit: cover;'>";
+                        echo "<div class='card-body'>";
+                        echo "<h5 class='card-title'>{$row['nome']}</h5>";
+                        echo "<p class='card-text'>Saldo: R$ $saldo</p>";
+                        echo "</div>"; // Fecha card-body
+                        echo "</div>"; // Fecha card
+                        echo "</div>"; // Fecha col-md-4
+
+                        $cardCount++;
+
+                        // Fecha o slide e inicia um novo quando o limite é atingido
+                        if ($cardCount % $cardsPorSlide == 0) {
+                            echo '</div></div>'; // Fecha a linha e o item do carrossel
+                            if ($result->num_rows > $cardCount) {
+                                echo '<div class="carousel-item"><div class="row">';
+                            }
+                        }
+                    }
+
+                    // Fecha a estrutura aberta caso o número de cards não seja múltiplo de 3
+                    if ($cardCount % $cardsPorSlide != 0) {
+                        echo '</div></div>';
+                    }
+
+                    $isActive = false; // Apenas o primeiro slide é ativo
+                } else {
+                    echo "<p class='text-center'>Nenhuma conta bancária encontrada.</p>";
                 }
+                $stmt->close();
             } else {
-                echo "<p class='list-group-item'>Nenhuma conta bancária encontrada.</p>";
+                echo "<p class='text-center'>Nenhum usuário logado.</p>";
             }
-            $stmt->close();
-        } else {
-            echo "<p class='list-group-item'>Nenhum usuário logado.</p>";
-        }
-        ?>
+            ?>
+        </div>
+
+        <!-- Controles do carrossel -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#contasCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#contasCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Próximo</span>
+        </button>
     </div>
 
     <!-- Extrato -->
@@ -600,6 +726,12 @@
             }
         }
     </script>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 
