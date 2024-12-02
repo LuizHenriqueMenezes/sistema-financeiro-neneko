@@ -16,7 +16,9 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
         // Carregando os pacotes necessários do Google Charts
-        google.charts.load('current', {'packages':['corechart']});
+        google.charts.load('current', {
+            'packages': ['corechart']
+        });
         google.charts.setOnLoadCallback(drawSaldoChart);
 
         function drawSaldoChart() {
@@ -62,8 +64,13 @@
                 title: 'Divisão de Saldo',
                 pieHole: 0.4, // Torna o gráfico um gráfico de rosca
                 backgroundColor: '#f9f9f9',
-                chartArea: { width: '90%', height: '80%' },
-                legend: { position: 'bottom' }
+                chartArea: {
+                    width: '90%',
+                    height: '80%'
+                },
+                legend: {
+                    position: 'bottom'
+                }
             };
 
             // Renderizando o gráfico
@@ -726,6 +733,316 @@
             }
         }
     </script>
+
+    <!-- Gráfico de Economias -->
+    <div class="grafico">
+        <h3 class="titulo_centroM">Economias Acumuladas</h3>
+        <canvas id="economiaChart"></canvas>
+    </div>
+
+    <script>
+        // Gráfico de Economias Acumuladas
+        var ctxEconomia = document.getElementById('economiaChart').getContext('2d');
+        var economiaChart = new Chart(ctxEconomia, {
+            type: 'bar',
+            data: {
+                labels: ['Últimos 7 Dias'],
+                datasets: [{
+                    label: 'Economias',
+                    data: [
+                        <?php
+                        $sql_economia = "
+                        SELECT (
+                            (SELECT SUM(valor) FROM receitas_usuario WHERE usuario_id = ? AND data_recebimento >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)) -
+                            (SELECT SUM(valor) FROM despesas_usuario WHERE usuario_id = ? AND data_despesa >= DATE_SUB(CURDATE(), INTERVAL 7 DAY))
+                        ) AS economia";
+                        $stmt = $conn->prepare($sql_economia);
+                        $stmt->bind_param("ii", $usuario_id, $usuario_id);
+                        $stmt->execute();
+                        $result = $stmt->get_result()->fetch_assoc();
+                        echo $result['economia'] ?? 0;
+                        ?>
+                    ],
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString('pt-BR', {
+                                    style: 'currency',
+                                    currency: 'BRL'
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+    <!-- Gráfico de Comparação Mensal -->
+    <div class="grafico">
+        <h3 class="titulo_centroM">Comparação Mensal</h3>
+        <canvas id="comparacaoMensalChart"></canvas>
+    </div>
+
+    <script>
+        // Gráfico de Comparação Mensal
+        var ctxComparacao = document.getElementById('comparacaoMensalChart').getContext('2d');
+        var comparacaoMensalChart = new Chart(ctxComparacao, {
+            type: 'bar',
+            data: {
+                labels: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                datasets: [{
+                        label: 'Receitas',
+                        data: [
+                            <?php
+                            for ($i = 1; $i <= 12; $i++) {
+                                $sql = "
+                                SELECT SUM(valor) AS total FROM receitas_usuario 
+                                WHERE usuario_id = ? AND MONTH(data_recebimento) = ?";
+                                $stmt = $conn->prepare($sql);
+                                $stmt->bind_param("ii", $usuario_id, $i);
+                                $stmt->execute();
+                                $result = $stmt->get_result()->fetch_assoc();
+                                echo ($result['total'] ?? 0) . ",";
+                                $stmt->close();
+                            }
+                            ?>
+                        ],
+                        backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Despesas',
+                        data: [
+                            <?php
+                            for ($i = 1; $i <= 12; $i++) {
+                                $sql = "
+                                SELECT SUM(valor) AS total FROM despesas_usuario 
+                                WHERE usuario_id = ? AND MONTH(data_despesa) = ?";
+                                $stmt = $conn->prepare($sql);
+                                $stmt->bind_param("ii", $usuario_id, $i);
+                                $stmt->execute();
+                                $result = $stmt->get_result()->fetch_assoc();
+                                echo ($result['total'] ?? 0) . ",";
+                                $stmt->close();
+                            }
+                            ?>
+                        ],
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString('pt-BR', {
+                                    style: 'currency',
+                                    currency: 'BRL'
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+    <!-- Divisão de Receitas nos Últimos 7 Dias -->
+    <div class="grafico">
+        <h3 class="titulo_centroM">Divisão de Receitas (Últimos 7 Dias)</h3>
+        <canvas id="receitasPieChart"></canvas>
+    </div>
+
+    <script>
+        // Gráfico de Divisão de Receitas nos Últimos 7 Dias
+        var ctxReceitasPie = document.getElementById('receitasPieChart').getContext('2d');
+        var receitasPieChart = new Chart(ctxReceitasPie, {
+            type: 'pie',
+            data: {
+                labels: [
+                    <?php
+                    // Obter categorias de receita
+                    $sql = "SELECT DISTINCT categoria FROM receitas_usuario WHERE usuario_id = ?";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("i", $usuario_id);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $categorias = [];
+                    while ($row = $result->fetch_assoc()) {
+                        $categorias[] = $row['categoria'];
+                    }
+                    echo "'" . implode("','", $categorias) . "'";
+                    $stmt->close();
+                    ?>
+                ],
+                datasets: [{
+                    data: [
+                        <?php
+                        // Somar valores por categoria
+                        foreach ($categorias as $categoria) {
+                            $sql = "
+                            SELECT SUM(valor) AS total FROM receitas_usuario
+                            WHERE usuario_id = ? AND categoria = ? AND data_recebimento >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)";
+                            $stmt = $conn->prepare($sql);
+                            $stmt->bind_param("is", $usuario_id, $categoria);
+                            $stmt->execute();
+                            $result = $stmt->get_result()->fetch_assoc();
+                            echo ($result['total'] ?? 0) . ",";
+                            $stmt->close();
+                        }
+                        ?>
+                    ],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(153, 102, 255, 0.7)',
+                        'rgba(255, 159, 64, 0.7)'
+                    ]
+                }]
+            }
+        });
+    </script>
+
+    <!-- Fluxo de Caixa Semanal -->
+    <div class="grafico">
+        <h3 class="titulo_centroM">Fluxo de Caixa (Últimos 7 Dias)</h3>
+        <canvas id="fluxoCaixaChart"></canvas>
+    </div>
+
+    <script>
+        // Gráfico de Fluxo de Caixa Semanal
+        var ctxFluxoCaixa = document.getElementById('fluxoCaixaChart').getContext('2d');
+        var fluxoCaixaChart = new Chart(ctxFluxoCaixa, {
+            type: 'line',
+            data: {
+                labels: [<?php
+                            $labels = [];
+                            for ($i = 6; $i >= 0; $i--) {
+                                $labels[] = date('d/m', strtotime("-$i days"));
+                            }
+                            echo "'" . implode("','", $labels) . "'";
+                            ?>],
+                datasets: [{
+                    label: 'Saldo Diário',
+                    data: [
+                        <?php
+                        for ($i = 6; $i >= 0; $i--) {
+                            $data = date('Y-m-d', strtotime("-$i days"));
+                            $sql_receitas = "
+                            SELECT SUM(valor) AS total FROM receitas_usuario 
+                            WHERE usuario_id = ? AND data_recebimento = ?";
+                            $stmt = $conn->prepare($sql_receitas);
+                            $stmt->bind_param("is", $usuario_id, $data);
+                            $stmt->execute();
+                            $result_receitas = $stmt->get_result()->fetch_assoc();
+                            $stmt->close();
+
+                            $sql_despesas = "
+                            SELECT SUM(valor) AS total FROM despesas_usuario 
+                            WHERE usuario_id = ? AND data_despesa = ?";
+                            $stmt = $conn->prepare($sql_despesas);
+                            $stmt->bind_param("is", $usuario_id, $data);
+                            $stmt->execute();
+                            $result_despesas = $stmt->get_result()->fetch_assoc();
+                            $stmt->close();
+
+                            $saldo = ($result_receitas['total'] ?? 0) - ($result_despesas['total'] ?? 0);
+                            echo $saldo . ",";
+                        }
+                        ?>
+                    ],
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString('pt-BR', {
+                                    style: 'currency',
+                                    currency: 'BRL'
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+    <!-- Comparativo de Categorias de Receita -->
+    <div class="grafico">
+        <h3 class="titulo_centroM">Comparativo de Categorias de Receita</h3>
+        <canvas id="categoriasReceitaChart"></canvas>
+    </div>
+
+    <script>
+        // Gráfico de Comparativo de Categorias de Receita
+        var ctxCategoriasReceita = document.getElementById('categoriasReceitaChart').getContext('2d');
+        var categoriasReceitaChart = new Chart(ctxCategoriasReceita, {
+            type: 'bar',
+            data: {
+                labels: [
+                    <?php echo "'" . implode("','", $categorias) . "'"; ?>
+                ],
+                datasets: [{
+                    label: 'Receitas por Categoria',
+                    data: [
+                        <?php
+                        foreach ($categorias as $categoria) {
+                            $sql = "
+                            SELECT SUM(valor) AS total FROM receitas_usuario
+                            WHERE usuario_id = ? AND categoria = ?";
+                            $stmt = $conn->prepare($sql);
+                            $stmt->bind_param("is", $usuario_id, $categoria);
+                            $stmt->execute();
+                            $result = $stmt->get_result()->fetch_assoc();
+                            echo ($result['total'] ?? 0) . ",";
+                            $stmt->close();
+                        }
+                        ?>
+                    ],
+                    backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString('pt-BR', {
+                                    style: 'currency',
+                                    currency: 'BRL'
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
