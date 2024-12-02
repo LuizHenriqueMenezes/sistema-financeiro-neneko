@@ -83,6 +83,7 @@
 <body>
     <div class="barra">
         <h2>Bem vindo(a),
+            <strong>
             <?php
             require_once 'conexao.php';
             if (isset($_SESSION['usuario_id'])) {
@@ -105,7 +106,17 @@
             } else {
                 echo "Visitante"; // Caso não haja um usuário logado
             }
-            ?>! Seu saldo total é de R$
+            ?></strong>! </h2>
+
+        <nav>
+            <ul>
+                <li><a href="logout.php">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="total-saldo">
+             Seu saldo total é de R$
             <?php
             require_once 'conexao.php';
             if (isset($_SESSION['usuario_id'])) {
@@ -130,15 +141,7 @@
                 echo "0,00";  // Caso não haja um usuário logado
             }
             ?>
-        </h2>
-
-
-        <nav>
-            <ul>
-                <li><a href="logout.php">Logout</a></li>
-            </ul>
-        </nav>
-    </div>
+            </div>
 
     <div class="btn-group">
         <button type="button" id="addContaBtn" class="btn btn-outline-primary">Adicionar Conta Bancária</button>
