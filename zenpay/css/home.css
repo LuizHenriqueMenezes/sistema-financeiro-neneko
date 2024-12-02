@@ -1,0 +1,453 @@
+/* Estilos gerais */
+body {
+    background-color: #FEFEFA;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-family: "Montserrat", sans-serif;
+    /* Impede a rolagem horizontal */
+}
+
+/* Barra de navegação */
+.barra {
+    background-color: #F5F50A;
+    color: rgba(23, 20, 179, 1);
+    display: flex;
+    justify-content: space-between;
+    /* Adiciona espaçamento entre os itens */
+    align-items: center;
+    padding: 10px 20px;
+    width: 100%;
+    position: relative;
+    /* Remover 'fixed' para tornar o menu não fixo */
+    z-index: 1;
+    /* Adicionar um z-index para garantir que o menu fique sobreposto a outros elementos */
+}
+
+
+.barra h2{
+    margin: 0;
+}
+
+.total-saldo{
+    background-color: rgba(23, 20, 179, 1);
+    color: #F5F50A;
+    display: flex;
+    justify-content: space-between;
+    /* Adiciona espaçamento entre os itens */
+    align-items: center;
+    padding: 10px 20px;
+    width: 100%;
+    position: relative;
+    /* Remover 'fixed' para tornar o menu não fixo */
+    z-index: 1;
+    /* Adicionar um z-index para garantir que o menu fique sobreposto a outros elementos */
+    font-size: 25px;
+}
+/* Manter o h1 à esquerda do menu */
+.barra h1 {
+    margin: 0;
+    font-family: "Montserrat", sans-serif;
+    display: flex;
+    align-items: center;
+    /* Alinha o texto verticalmente com a imagem */
+}
+
+/* Tamanho da imagem do gatinho igual ao texto */
+.barra h1 img {
+    height: 1em;
+    /* Define a altura da imagem igual ao tamanho do texto */
+    margin-left: 5px;
+    /* Adiciona um pequeno espaçamento entre o texto e a imagem */
+}
+
+/* Centralizar apenas as opções do menu */
+.barra nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    /* Centralizar as opções de menu */
+}
+
+.barra nav ul li {
+    margin-right: 30px;
+}
+
+.barra nav ul li:first-child {
+    margin-right: 15px;
+    /* Distância menor entre as opções */
+}
+
+.barra nav ul li a {
+    text-decoration: none;
+    color: rgba(23, 20, 179, 1);
+    font-family: "Montserrat", sans-serif;
+}
+
+@media screen and (max-width: 700px) {
+
+    /* Barra de navegação responsiva */
+    .barra {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .barra nav {
+        margin-top: 10px;
+    }
+
+    .barra nav ul {
+        margin-top: 10px;
+    }
+
+    .barra nav ul li {
+        display: block;
+        margin-bottom: 10px;
+    }
+}
+
+.navbar-custom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ccc;
+}
+
+.navbar-custom h1 {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-custom img {
+    margin-left: 20px;
+    height: 30px;
+}
+
+.navbar-custom nav ul {
+    display: flex;
+    list-style-type: none;
+}
+
+.navbar-custom nav ul li {
+    margin-right: 20px;
+}
+
+.btn-group {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.bv-home {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgba(23, 20, 179, 1);;
+    margin-top: 6px;
+}
+
+hr {
+    color:rgba(23, 20, 179, 1);;
+    border-width: 2px;
+}
+
+.list-group {
+    margin: 2px 20px;
+}
+
+.extrato {
+    float: left;
+    width: calc(99% - 20px);
+    /* Ajusta o tamanho e leva em conta a margem */
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-bottom: 80px;
+    height: calc(81vh - 100px);
+    overflow-y: auto;
+    /* Adiciona uma barra de rolagem vertical */
+    border: 0.5px solid #ccc;
+    /* Adiciona uma borda para demarcar o tamanho */
+    border-radius: 10px;
+
+    /* Estilização da barra de rolagem */
+    scrollbar-width: thin;
+    /* Para navegadores que suportam o padrão */
+    scrollbar-color: #0070BB #ccc;
+    /* Cor da barra e cor de fundo */
+
+    /* Estilos para navegadores WebKit (Chrome, Safari, Opera) */
+    &::-webkit-scrollbar {
+        width: 6px;
+        /* Largura da barra de rolagem */
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #0070BB;
+        /* Cor do botão da barra de rolagem */
+        border-radius: 6px;
+        /* Borda do botão */
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: #f0f0f0;
+        /* Cor de fundo da barra de rolagem */
+        border-radius: 14px;
+        /* Borda da barra de rolagem */
+    }
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #7952b3;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.extrato {
+    margin-top: 20px;
+}
+
+.extrato .fundo-extrato {
+    background-color: rgba(23, 20, 179, 1);;
+    padding: 1px;
+}
+
+.extrato label {
+    color: #0070BB;
+    font-family: "Montserrat", sans-serif;
+    font-size: 19px;
+}
+
+.extrato select {
+    width: 20%;
+    padding: 10px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.extrato h2 {
+    color: #FEFEFA;
+}
+
+
+.extrato p {
+    margin-bottom: 5px;
+}
+
+.extrato .despesa {
+    color: #dc3545;
+}
+
+.extrato .receita {
+    color: #28a745;
+}
+
+.extrato .conta {
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+.extrato .data {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+
+/* Centraliza os botões */
+.btn-outline-danger {
+    margin: 0 10px;
+}
+
+#addContaBtn,
+#addReceitaBtn,
+#addDespesaBtn,
+#editarMeta {
+    display: block;
+    text-align: center;
+    margin: 15px 20px;
+    border-radius: 10px;
+}
+
+input[type="text"],
+.estilo-select {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+input[type="submit"] {
+    width: 100%;
+    background-color: #0070BB;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+@media (min-width: 701px) {
+    .grafico canvas {
+        max-width: 100%;
+        max-height: 600px;
+    }
+}
+
+/* Estilo para o gráfico de pizza */
+.grafico-pizza {
+    max-width: 400px;
+    /* Largura máxima do gráfico */
+    margin: auto;
+    /* Centralizar o gráfico */
+}
+
+/* Ajustar o tamanho do gráfico para telas maiores que 700px */
+@media screen and (min-width: 700px) {
+    .grafico-pizza {
+        max-width: 500px;
+        /* Aumentar a largura para telas maiores */
+        margin-top: 20px;
+    }
+
+    .extrato {
+        margin-top: 20px;
+        margin-left: 20px;
+    }
+
+    .extrato select {
+        width: 20%;
+        padding: 10px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-sizing: border-box;
+    }
+
+    .extrato label {
+        color: #0070BB;
+        font-family: "Montserrat", sans-serif;
+        font-size: 25px;
+    }
+}
+
+.titulo_centroM {
+    font-weight: bold;
+    color: #0070BB;
+    margin-top: 80px;
+    margin-left: 20px;
+}
+
+.titulo_centro {
+    font-weight: bold;
+    color: #0070BB;
+    margin-top: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column;
+}
+
+@media (min-width: 700px) {
+    .grafico-pizza-container {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 10px;
+    }
+
+    .grafico-pizza {
+        flex: 1;
+        max-width: 35%;
+    }
+}
+
+.card {
+    margin: 10px;
+}
+
+.card img {
+    margin-top: 10px;
+    height: 180px;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+.carousel-item .row {
+    justify-content: center;
+}
+
+/* Altera a cor da seta para a esquerda */
+.carousel-control-prev-icon {
+    background-color: transparent;
+    /* Remove o fundo padrão */
+    border-radius: 50%;
+    /* Torna o fundo circular (opcional) */
+    background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" fill="%230070BB" viewBox="0 0 16 16"%3E%3Cpath d="M11.354 1.354a.5.5 0 0 1 0 .707L6.207 7.207a.5.5 0 0 1-.708 0L4.5 6.707 8.146 3.146a.5.5 0 0 1 .707 0l2.5 2.5 2.5-2.5a.5.5 0 0 1 .707 0z"/%3E%3C/svg%3E');
+    background-size: 100%;
+    /* Garante que a seta ocupa todo o espaço */
+}
+
+/* Altera a cor da seta para a direita */
+.carousel-control-next-icon {
+    background-color: transparent;
+    /* Remove o fundo padrão */
+    border-radius: 50%;
+    /* Torna o fundo circular (opcional) */
+    background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" fill="%230070BB" viewBox="0 0 16 16"%3E%3Cpath d="M4.646 1.354a.5.5 0 0 1 0 .707L9.793 7.207a.5.5 0 0 1-.708 0L11.5 6.707 7.854 3.146a.5.5 0 0 1-.707 0L5.646 4.646a.5.5 0 0 1-.707-.707z"/%3E%3C/svg%3E');
+    background-size: 100%;
+    /* Garante que a seta ocupa todo o espaço */
+}

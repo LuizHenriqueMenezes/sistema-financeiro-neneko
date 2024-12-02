@@ -1,4 +1,4 @@
 <?php
-header("Location: ./neneko/");
+header("Location: ./zenpay/");
 exit;
 ?>
